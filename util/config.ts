@@ -60,6 +60,8 @@ export type HAConfig = {
     rethink_prefix: string
     mqtt_user: string
     mqtt_pass: string
+    /** Language of the entity names and states shown in Home Assistant, e.g. "it". English by default. */
+    language?: string
 }
 
 export type Port = {

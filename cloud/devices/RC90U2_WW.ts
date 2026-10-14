@@ -1,4 +1,4 @@
-import HADevice from './base'
+import HADevice, { type Translations } from './base'
 import { Device as Thinq1Device } from '../thinq1/device'
 import { Device as Thinq2Device } from '../thinq2/device'
 import { type Connection, type DeviceDiscovery } from '../homeassistant'
@@ -209,6 +209,65 @@ const PAUSE_BEFORE_START_MS = 1200
 // The ThinQ app offers a delayed end of 3 to 19 hours, counted from the END of the cycle.
 const DELAY_MIN_HOURS = 3
 const DELAY_MAX_HOURS = 19
+
+// Italian: courses, dry levels and Eco Hybrid as printed on an Italian panel.
+const TRANSLATIONS: Translations = {
+    it: {
+        'LG Dryer': 'Asciugatrice LG',
+        Power: 'Accensione',
+        'Pause/Resume': 'Pausa/Riavvia',
+        'Start selected cycle': 'Avvia il programma scelto',
+        Status: 'Stato',
+        Phase: 'Fase',
+        Error: 'Errore',
+        'Error message': 'Messaggio di errore',
+        Course: 'Programma',
+        'Dry level': 'Livello di asciugatura',
+        'Anti crease': 'Antipiega',
+        'Delay end of the next start': 'Fine ritardata del prossimo avvio',
+        'Remaining time': 'Tempo residuo',
+        'Initial time': 'Durata iniziale',
+        'Delay end': 'Fine ritardata',
+        'Delay end set': 'Fine ritardata impostata',
+        'Remote start': 'Avvio remoto',
+        Energy: 'Energia',
+        'Child lock': 'Blocco bambini',
+        'Self cleaning': 'Autopulizia',
+        Yes: 'Sì',
+
+        Off: 'Spenta',
+        Standby: 'Pronta',
+        Paused: 'In pausa',
+        End: 'Fine',
+        Delayed: 'Partenza ritardata',
+        'Wrinkle care': 'Antipiega',
+
+        Detecting: 'Rilevamento',
+        Drying: 'Asciugatura',
+        Cooling: 'Raffreddamento',
+        'Anti-crease': 'Antipiega',
+
+        Cotton: 'Cotone',
+        'Mixed Fabric': 'Misti',
+        'Easy Care': 'Sintetici',
+        Duvet: 'Piumini',
+        'Cotton Soft': 'Asciugamani',
+        'Allergy Care': 'Anti Allergia',
+        'Quick Dry': 'Rapido 30',
+        'Warm Air': 'Aria calda',
+        'Cool Air': 'Aria fredda',
+        'Rack Dry': 'Con cestello',
+        Delicate: 'Lingerie',
+        Wool: 'Delicati',
+        'Sports Wear': 'Speciale sport',
+        // the downloaded Lingerie, not to be confused with the panel's
+        Lingerie: 'Intimo',
+
+        Iron: 'Pronto stiro',
+        Cupboard: 'Pronto armadio',
+        Normal: 'Normale',
+    },
+}
 
 // What the two Wi-Fi modules do differently: how a command reaches the appliance, and whether a start
 // can change the settings of a cycle under way.
@@ -621,6 +680,8 @@ export class Dryer {
 
 // The ThinQ2 variant (QCOM_QCA4010 module): AABB frames.
 export default class Device extends AABBDevice {
+    static translations = TRANSLATIONS
+
     readonly dryer: Dryer = new Dryer(this, {
         midCycleStart: true,
         powerOn: () => this.send(Buffer.from(POWER_ON, 'hex')),
@@ -688,6 +749,8 @@ export function resumeData(rec: Buffer) {
 }
 
 export class RC90U2_WW_T1 extends T1Device {
+    static translations = TRANSLATIONS
+
     readonly dryer: Dryer = new Dryer(this, {
         midCycleStart: false,
         powerOff: () => {
