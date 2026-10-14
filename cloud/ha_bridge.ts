@@ -139,7 +139,7 @@ class Bridge {
         })
         HA.on('setProperty', (id: string, prop: string, value: string) => {
             const ha = this.haDevices.get(id)
-            if (ha) ha.setProperty(prop, value)
+            if (ha) ha.receiveProperty(prop, value)
         })
     }
 

@@ -7,6 +7,7 @@
     "rethink_prefix": "rethink", // rethink topics will be prefixed with this
     "mqtt_user": "",
     "mqtt_pass": ""
+    // "language": "it" // entity names and states in Home Assistant, for the devices that are translated
   },
 
   // Rethink runs a builtin CA to sign its TLS endpoints' certificates. The same CA is used to sign
