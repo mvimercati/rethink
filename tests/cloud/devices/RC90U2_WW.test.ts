@@ -65,8 +65,9 @@ const SERIAL_FRAME = buf(
 // Five-byte power events around power toggles; must be ignored.
 const POWER_EVENT = buf('AA07301900AFBB')
 
-function makeDevice() {
+function makeDevice(language?: string) {
     const ha = new MockHAConnection()
+    if (language) Object.assign(ha, { config: { language } })
     const thinq = new MockThinq2Device(DEVICE_ID, META)
     const dev = new DUT(ha.asConnection(), thinq, META)
     return { ha, thinq, dev, props: () => ha.devices[DEVICE_ID].properties }
@@ -438,6 +439,57 @@ describe(`${MODEL_ID} commands`, () => {
         assert.equal(hex(thinq.outbox.pop()!), WRITE_POWER_OFF)
         dev.setProperty('start_pause', '')
         assert.equal(hex(thinq.outbox.pop()!), WRITE_START_PAUSE)
+    })
+
+    test('in Italian: names, options and values translated, entity ids and commands in English', () => {
+        const { ha, thinq, dev, props } = makeDevice('it')
+        const config = ha.devices[DEVICE_ID].config!
+        const components = config.components as Record<
+            string,
+            { name?: string | null; options?: string[]; default_entity_id?: string }
+        >
+
+        assert.equal(config.device.name, 'Asciugatrice LG')
+        assert.equal(components.status.name, 'Stato')
+        assert.deepEqual(components.status.options, [
+            'Spenta',
+            'Pronta',
+            'In funzione',
+            'In pausa',
+            'Fine',
+            'Errore',
+            'Partenza ritardata',
+        ])
+        assert.equal(components.course.options![2], 'Sintetici')
+        assert.equal(new Set(components.course.options).size, components.course.options!.length, 'no duplicates')
+        assert.equal(components.status.default_entity_id, 'sensor.lg_dryer_status')
+        assert.equal(components.power.default_entity_id, 'switch.lg_dryer_power')
+        assert.equal(components.anti_crease.default_entity_id, 'select.lg_dryer_anti_crease')
+
+        thinq.emit('data', READY_COTTON)
+        assert.equal(props().status, 'Pronta')
+        assert.equal(props().course, 'Cotone')
+        assert.equal(props().eco_hybrid, 'Turbo')
+        assert.equal(props().power, 'ON', 'switch payloads are not translated')
+
+        // a select set from HA in Italian reaches the device in English
+        dev.receiveProperty('course', 'Sintetici')
+        assert.equal(props().course, 'Sintetici')
+        thinq.resetRecorder()
+        dev.receiveProperty('start', '')
+        assert.equal(thinq.outbox.pop()![4], 0x05) // Easy Care
+
+        // the panel's Lingerie is Delicate in the modelJSON
+        dev.receiveProperty('course', 'Lingerie')
+        dev.receiveProperty('start', '')
+        assert.equal(thinq.outbox.pop()![4], 0x0a)
+    })
+
+    test('without a language nothing is translated', () => {
+        const { ha } = makeDevice()
+        const config = ha.devices[DEVICE_ID].config!
+        assert.equal(config.device.name, 'LG Dryer')
+        assert.equal(config.components.status.default_entity_id, undefined)
     })
 })
 

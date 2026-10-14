@@ -20,6 +20,7 @@ type Options = {
     hostname?: string
     discovery_prefix?: string
     rethink_prefix?: string
+    language?: string
     mqtt_url?: string
     mqtt_user?: string
     mqtt_pass?: string
@@ -123,6 +124,7 @@ export async function loadHassioConfig(configDir: string, optionsPath: string): 
             rethink_prefix: opts.rethink_prefix ?? 'rethink',
             mqtt_user: mqtt.user,
             mqtt_pass: mqtt.pass,
+            language: opts.language || undefined,
         },
         ca_key_file: 'ca.key',
         ca_cert_file: 'ca.cert',

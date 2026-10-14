@@ -1,4 +1,4 @@
-import HADevice from './base'
+import HADevice, { type Translations } from './base'
 import { type Connection } from '../homeassistant'
 import { type Metadata } from '../thinq'
 import { allowExtendedType } from '@/util/casting'
@@ -207,7 +207,68 @@ const PAUSE_BEFORE_START_MS = 1200
 const DELAY_MIN_HOURS = 3
 const DELAY_MAX_HOURS = 19
 
+// Italian: courses, dry levels and Eco Hybrid as printed on an Italian panel.
+const TRANSLATIONS: Translations = {
+    it: {
+        'LG Dryer': 'Asciugatrice LG',
+        Power: 'Accensione',
+        'Pause/Resume': 'Pausa/Riavvia',
+        'Start selected cycle': 'Avvia il programma scelto',
+        Status: 'Stato',
+        Phase: 'Fase',
+        Error: 'Errore',
+        'Error message': 'Messaggio di errore',
+        Course: 'Programma',
+        'Dry level': 'Livello di asciugatura',
+        'Anti crease': 'Antipiega',
+        'Delay end of the next start': 'Fine ritardata del prossimo avvio',
+        'Remaining time': 'Tempo residuo',
+        'Initial time': 'Durata iniziale',
+        'Delay end': 'Fine ritardata',
+        'Delay end set': 'Fine ritardata impostata',
+        'Remote start': 'Avvio remoto',
+        Energy: 'Energia',
+        'Child lock': 'Blocco bambini',
+        Yes: 'Sì',
+
+        Off: 'Spenta',
+        Ready: 'Pronta',
+        Running: 'In funzione',
+        Paused: 'In pausa',
+        End: 'Fine',
+        Delayed: 'Partenza ritardata',
+
+        Detecting: 'Rilevamento',
+        Drying: 'Asciugatura',
+        Cooling: 'Raffreddamento',
+        'Anti-crease': 'Antipiega',
+
+        Cotton: 'Cotone',
+        'Mixed Fabric': 'Misti',
+        'Easy Care': 'Sintetici',
+        Duvet: 'Piumini',
+        'Cotton Soft': 'Asciugamani',
+        'Allergy Care': 'Anti Allergia',
+        'Quick Dry': 'Rapido 30',
+        'Warm Air': 'Aria calda',
+        'Cool Air': 'Aria fredda',
+        'Rack Dry': 'Con cestello',
+        Delicate: 'Lingerie',
+        Wool: 'Delicati',
+        'Sports Wear': 'Speciale sport',
+        // the downloaded Lingerie, not to be confused with the panel's
+        Lingerie: 'Intimo',
+
+        Iron: 'Pronto stiro',
+        Cupboard: 'Pronto armadio',
+        Normal: 'Normale',
+        Time: 'Turbo',
+    },
+}
+
 export default class Device extends AABBDevice {
+    static translations = TRANSLATIONS
+
     // The course and settings shown in HA and sent by Start selected cycle. The appliance does not
     // report "what will run next", so a choice made in HA is held here until the button is pressed.
     remote = {
